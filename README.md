@@ -1,6 +1,13 @@
 # Coturn AutoInstall
 Auto Install Coturn (STUN &amp; TURN) for Debian 10 Buster
 
+# Information
+In full install method, the script install Certbot for Letsencrypt Certificate. 
+Added packets :
+- wget
+- coturn
+- certbot
+
 # Install
 Must be run in root.
 ```
