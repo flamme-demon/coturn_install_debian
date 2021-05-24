@@ -1,4 +1,4 @@
-#!/bin/sh
+#/bin/sh
 # Copyright 2021 Franck MULLER (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -218,13 +218,14 @@ usage() {
     This script is used to install Coturn
 
     usage : $(basename $0) {-t}
-        without arg (dra) : install Coturn
-	-d		  : add Turn Service
+        without arg       : install Coturn
+	-t		  : add Turn Service
         -r                : remove Coturn
 EOF
     exit 1
 }
-while getopts ':rda:' opt; do
+
+while getopts ':rt:' opt; do
     case ${opt} in
         r)
 	    systemctl stop coturn
@@ -232,7 +233,7 @@ while getopts ':rda:' opt; do
 	    apt-get autoremove coturn certbot -y
 	    exit
             ;;
-	d)
+	t)
 	    active_turn
 	    exit
 	    ;;
@@ -241,4 +242,5 @@ while getopts ':rda:' opt; do
             ;;
     esac
 done
+
 install_coturn
