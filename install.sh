@@ -225,20 +225,21 @@ EOF
     exit 1
 }
 
-while getopts ':rt:' opt; do
+while getopts ':rt' opt; do
     case ${opt} in
         r)
 	    systemctl stop coturn
 	    apt-get remove coturn certbot -y
 	    apt-get autoremove coturn certbot -y
-	    exit
+	    exit 0
             ;;
 	t)
 	    active_turn
-	    exit
+	    exit 0
 	    ;;
         *)
             usage
+	    exit 0
             ;;
     esac
 done
