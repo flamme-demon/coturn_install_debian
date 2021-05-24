@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 # Copyright 2021 Franck MULLER (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -221,7 +221,6 @@ usage() {
         without arg (dra) : install Coturn
 	-d		  : add Turn Service
         -r                : remove Coturn
-	-a		  : test
 EOF
     exit 1
 }
@@ -234,9 +233,7 @@ while getopts ':rda:' opt; do
 	    exit
             ;;
 	d)
-	    #active_turn
-	    nat_enable
-	    detect_ip
+	    active_turn
 	    exit
 	    ;;
         *)
