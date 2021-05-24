@@ -13,7 +13,7 @@ install_coturn() {
 	while read -r line; do
 		i=$(( i + 1 ))
 		echo $i
-		done < <(apt-get install coturn -y)
+		done < <(apt-get update && apt-get install dnsutils coturn -y)
 	 } | whiptail --gauge "Wait update and install Coturn Service" 6 60 0
 	else
 	exit
@@ -85,15 +85,31 @@ configure_turn() {
 }
 
 nat_enable() {
-         whiptail --yesno "NAT is enable on your Network ? (Public IP/ Private IP)" 10 60 2
+	 localIP=$(detect_localip)
+	 wanIP=$(detect_wanip)
+	 detectNAT=$([[ $localIP == $wanIP ]] && echo "noNAT" || echo "NAT")
+	 if [ $detectNAT = "NAT" ]; then #if yes
+	  whiptail --yesno "NAT is detected on your Network, it's correct ? ( $wanIP --> $localIP)" 10 60 2
           if [ $? -eq 0 ]; then # yes
-	    PUBIP=$(whiptail --inputbox "Please write your Public IP" 8 39 1.1.1.1 3>&1 1>&2 2>&3)
-	    PRIVIP=$(whiptail --inputbox "Please write your Private IP" 8 39 192.168.1.1 3>&1 1>&2 2>&3)
+            PUBIP=$(whiptail --inputbox "Your public IP (change if not correct)" 8 39 $wanIP 3>&1 1>&2 2>&3)
+            PRIVIP=$(whiptail --inputbox "Your private IP (change if not correct)" 8 39 $localIP 3>&1 1>&2 2>&3)
             sed -i '/extern-ip/c\extern-ip='$PUBIP'/'$PRIVIP /etc/turnserver.conf
-	    construct_start
+            construct_start
           else #no NAT
 	    construct_start
           fi
+	 else #if no detect_ip
+	  whiptail --yesno "NO NAT, it's correct ? ( $wanIP --> $localIP)" 10 60 2
+          if [ $? -eq 0 ]; then # yes no NAT
+            construct_start
+	echo "step 2 NO NAT confirm"
+          else #no NAT is active
+            PUBIP=$(whiptail --inputbox "Your public IP (change if not correct)" 8 39 $wanIP 3>&1 1>&2 2>&3)
+            PRIVIP=$(whiptail --inputbox "Your private IP (change if not correct)" 8 39 $localIP 3>&1 1>&2 2>&3)
+            sed -i '/extern-ip/c\extern-ip='$PUBIP'/'$PRIVIP /etc/turnserver.conf
+            construct_start
+          fi
+	 fi
 }
 
 configure_coturn() {
@@ -121,6 +137,16 @@ setup_all() {
 	    sed -i '/#listening-port/c\listening-port='$STUNPORT /etc/turnserver.conf
           fi
 	active_turn
+}
+
+#Detect
+detect_localip() {
+	hostname -I
+	return
+}
+detect_wanip() {
+	dig +short myip.opendns.com @resolver1.opendns.com
+	return
 }
 #Construct
 construct_file() {
@@ -192,10 +218,10 @@ usage() {
     This script is used to install Coturn
 
     usage : $(basename $0) {-t}
-        without arg (rda) : install Coturn
+        without arg (dra) : install Coturn
 	-d		  : add Turn Service
         -r                : remove Coturn
-
+	-a		  : test
 EOF
     exit 1
 }
@@ -208,7 +234,9 @@ while getopts ':rda:' opt; do
 	    exit
             ;;
 	d)
-	    active_turn
+	    #active_turn
+	    nat_enable
+	    detect_ip
 	    exit
 	    ;;
         *)
