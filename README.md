@@ -7,6 +7,7 @@ Added packets :
 - wget
 - coturn
 - certbot
+- dnsutils
 
 # Install
 Must be run in root.
