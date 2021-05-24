@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/bash
 # Copyright 2021 Franck MULLER (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
