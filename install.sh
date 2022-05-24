@@ -63,7 +63,7 @@ run_certbot() {
         while read -r line; do
                 i=$(( i + 1 ))
                 echo $i
-                done < <(certbot certonly --quiet --email $MAIL --standalone --preferred-challenges http -d $TURNDOMAIN)
+                done < <(certbot certonly --quiet --email $MAIL --standalone --preferred-challenges http -d $TURNDOMAIN --agree-tos)
         } | whiptail --gauge "Please wait Certbot create SSL certificate, maybe long operation..." 6 60 0
         fi
 	configure_turn
