@@ -106,7 +106,7 @@ nat_enable() {
           else #no NAT is active
             PUBIP=$(whiptail --inputbox "Your public IP (change if not correct)" 8 39 $wanIP 3>&1 1>&2 2>&3)
             PRIVIP=$(whiptail --inputbox "Your private IP (change if not correct)" 8 39 $localIP 3>&1 1>&2 2>&3)
-            sed -i '/extern-ip/c\extern-ip='$PUBIP'/'$PRIVIP /etc/turnserver.conf
+            sed -i '/#extern-ip/c\extern-ip='$PUBIP'/'$PRIVIP /etc/turnserver.conf
             construct_start
           fi
 	 fi
