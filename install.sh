@@ -93,7 +93,7 @@ nat_enable() {
           if [ $? -eq 0 ]; then # yes
             PUBIP=$(whiptail --inputbox "Your public IP (change if not correct)" 8 39 $wanIP 3>&1 1>&2 2>&3)
             PRIVIP=$(whiptail --inputbox "Your private IP (change if not correct)" 8 39 $localIP 3>&1 1>&2 2>&3)
-            sed -i '/external-ip/c\external-ip='$PUBIP'/'$PRIVIP /etc/turnserver.conf
+            sed -i '/#external-ip/c\external-ip='$PUBIP'/'$PRIVIP /etc/turnserver.conf
             construct_start
           else #no NAT
 	    construct_start
@@ -158,7 +158,7 @@ lt-cred-mech
 server-name=
 realm=
 listening-ip=0.0.0.0
-external-ip=
+#external-ip=
 #user=
 total-quota=100
 stale-nonce=600
